@@ -19,15 +19,14 @@ async function run() {
         await client.connect();
         const database = client.db("FoodRestaurant");
         const usersCollection = database.collection("users");
-        // // create a document to insert
-        // const doc = {
-        //     name: "Hasim ",
-        //     email: "hasim@gmial.com"
-        // }
-        // const result = await usersCollection.insertOne(doc);
-        // console.log(`A document was inserted with the _id: ${result.insertedId}`);
-        // // console.log(result)
 
+        //Get API
+        app.get('/users', async (req, res) => {
+            const pointer = usersCollection.find({});
+            const users = await pointer.toArray();
+            res.send(users)
+
+        })
 
         //POST API
         app.post('/users', async (req, res) => {
@@ -38,6 +37,14 @@ async function run() {
 
 
         })
+        // // create a document to insert
+        // const doc = {
+        //     name: "Hasim ",
+        //     email: "hasim@gmial.com"
+        // }
+        // const result = await usersCollection.insertOne(doc);
+        // console.log(`A document was inserted with the _id: ${result.insertedId}`);
+        // // console.log(result)
     } finally {
         // await client.close();
     }
