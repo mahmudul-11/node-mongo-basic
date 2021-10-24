@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const ObjectId = require('mongodb').ObjectId;
 
 const { MongoClient } = require('mongodb');
 const app = express();
@@ -26,6 +27,14 @@ async function run() {
             const users = await pointer.toArray();
             res.send(users)
 
+        });
+        // Get dynamic Api 
+        app.get('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const user = await usersCollection.findOne(query);
+            console.log('Load user with id =', id);
+            res.json(user);
         })
 
         //POST API
@@ -36,7 +45,20 @@ async function run() {
             console.log(result);
 
 
-        })
+        });
+        //Delete API
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await usersCollection.deleteOne(query);
+            console.log(result);
+            res.json(result);
+        });
+
+
+
+
+
         // // create a document to insert
         // const doc = {
         //     name: "Hasim ",
@@ -45,6 +67,9 @@ async function run() {
         // const result = await usersCollection.insertOne(doc);
         // console.log(`A document was inserted with the _id: ${result.insertedId}`);
         // // console.log(result)
+
+
+
     } finally {
         // await client.close();
     }
